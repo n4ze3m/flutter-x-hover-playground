@@ -28,10 +28,10 @@ func handleGetBatteryLevel(arguments interface{}) (reply interface{}, err error)
 	}
 
 	for _, b := range batteries {
-		result += fmt.Sprintf("Current State: %s\n", b.State.String())
-		result += fmt.Sprintf("Current Capacity: %f mWh\n", b.Current)
-		result += fmt.Sprintf("Charge rate: %f mW,\n", b.ChargeRate)
-		result += fmt.Sprintf("Voltage: %f mW,\n", b.Voltage)
+		result += fmt.Sprintf("State: %s\n", b.State.String())
+		result += fmt.Sprintf("Capacity: %f mWh\n", b.Current)
+		result += fmt.Sprintf("Charge Rate: %f mW\n", b.ChargeRate)
+		result += fmt.Sprintf("Voltage: %f mW\n", b.Voltage)
 	}
 
 	return result, nil

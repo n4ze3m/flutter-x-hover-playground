@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter X Hover'),
     );
   }
 }
@@ -34,18 +34,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // call the method channel to get the battery object
-  var _batteryLevel = 'Unknown battery level.';
-  Future<void> _getBatteryLevel() async {
+  var _battery = 'Click the button to get the battery info';
+  Future<void> _getBattery() async {
     try {
       // result will be json object not int
       final  result =
           await platformChannelBattery.invokeMethod('getBattery');
       setState(() {
-        _batteryLevel = '$result';
+        _battery = '$result';
       });
     } on PlatformException catch (e) {
       setState(() {
-        _batteryLevel = "Failed to get battery level: '${e.message}'.";
+        _battery = "Failed to get battery info: '${e.message}'.";
       });
     }
   }  
@@ -61,14 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Battery Level: $_batteryLevel',
+              '$_battery',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _getBatteryLevel,
+        onPressed: _getBattery,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
