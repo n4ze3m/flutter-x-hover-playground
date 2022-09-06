@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"fmt"
+
 	"github.com/distatus/battery"
 	flutter "github.com/go-flutter-desktop/go-flutter"
 	"github.com/go-flutter-desktop/go-flutter/plugin"
@@ -14,21 +16,23 @@ var _ flutter.Plugin = &MyBatteryPlugin{}
 
 func (p *MyBatteryPlugin) InitPlugin(messenger plugin.BinaryMessenger) error {
 	channel := plugin.NewMethodChannel(messenger, channelName, plugin.StandardMethodCodec{})
-	channel.HandleFunc("getBatteryLevel", handleGetBatteryLevel)
+	channel.HandleFunc("getBattery", handleGetBatteryLevel)
 	return nil // no error
 }
 
 func handleGetBatteryLevel(arguments interface{}) (reply interface{}, err error) {
-	var data = map[string]interface{}{}
+	var result string
 	batteries, err := battery.GetAll()
 	if err != nil {
 		return nil, err
 	}
+
 	for _, b := range batteries {
-		data["percentage"] = b.Current
-		data["state"] = b.State.String()
-		data["volts"] = b.Voltage
-		data["isCharging"] = b.State == battery.Charging
+		result += fmt.Sprintf("Current State: %s\n", b.State.String())
+		result += fmt.Sprintf("Current Capacity: %f mWh\n", b.Current)
+		result += fmt.Sprintf("Charge rate: %f mW,\n", b.ChargeRate)
+		result += fmt.Sprintf("Voltage: %f mW,\n", b.Voltage)
 	}
-	return data, nil
+
+	return result, nil
 }

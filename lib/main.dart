@@ -39,9 +39,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       // result will be json object not int
       final  result =
-          await platformChannelBattery.invokeMethod('getBatteryLevel');
+          await platformChannelBattery.invokeMethod('getBattery');
       setState(() {
-        _batteryLevel = 'Battery level at $result % .';
+        _batteryLevel = '$result';
       });
     } on PlatformException catch (e) {
       setState(() {
