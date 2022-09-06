@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
 }
+const platformChannelBattery =
+     MethodChannel('com.myapp/battery');
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,7 +33,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _battery = 0;
+  // call the method channel to get the battery object
+  var _batteryLevel = 'Unknown battery level.';
+  Future<void> _getBatteryLevel() async {
+    try {
+      // result will be json object not int
+      final  result =
+          await platformChannelBattery.invokeMethod('getBatteryLevel');
+      setState(() {
+        _batteryLevel = 'Battery level at $result % .';
+      });
+    } on PlatformException catch (e) {
+      setState(() {
+        _batteryLevel = "Failed to get battery level: '${e.message}'.";
+      });
+    }
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +61,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$_battery',
+              'Battery Level: $_batteryLevel',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _getBatteryLevel,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
       ),
     );
   }
